@@ -138,7 +138,11 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements
 #    User creation only — privileges are dropped at runtime via `gosu` inside
 #    entrypoint.sh. No sudoers NOPASSWD is granted.
 # ---------------------------------------------------------------------------
-RUN groupadd --gid ${USER_GID} ${USERNAME} \
+# Newer osrf/ros base images ship a default "ubuntu" user/group with uid/gid
+# 1000, which collides with the default USER_UID/USER_GID. Remove it first.
+RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi \
+    && if getent group ubuntu >/dev/null; then groupdel ubuntu; fi \
+    && groupadd --gid ${USER_GID} ${USERNAME} \
     && useradd --uid ${USER_UID} --gid ${USER_GID} -m -s /bin/bash ${USERNAME} \
     && mkdir -p /workspace/src /workspace/build /workspace/install /workspace/log \
     && chown -R ${USERNAME}:${USERNAME} /workspace
