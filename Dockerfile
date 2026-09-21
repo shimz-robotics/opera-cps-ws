@@ -72,6 +72,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-humble-joint-trajectory-controller \
         ros-humble-velocity-controllers \
         ros-humble-effort-controllers \
+        ros-humble-ros2controlcli \
         # misc
         ros-humble-xacro \
     && rm -rf /var/lib/apt/lists/*
